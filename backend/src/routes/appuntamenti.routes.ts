@@ -9,7 +9,7 @@ interface ParamsWithId {
   id: string;
 }
 // GET single appointment
-router.get("/:id", async (req: Request<ParamsWithId>, res: Response) => {
+router.get("/:id", async (req, res) => {
   try {
     const id = parseInt(req.params.id);
     const appuntamento = await prisma.appuntamento.findUnique({
