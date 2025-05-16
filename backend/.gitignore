@@ -1,0 +1,8 @@
+node_modules
+# Keep environment variables out of version control
+.env
+# Ignora i file caricati ma mantieni le cartelle
+src/uploads/pdf/*
+!src/uploads/pdf/.gitkeep
+src/uploads/temp/*
+!src/uploads/temp/.gitkeep

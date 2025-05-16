@@ -1,0 +1,118 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// Modello per i Servizi offerti
+model Servizio {
+  id            String        @id @default(uuid())
+  nome          String
+  descrizione   String
+  prezzo        Float?
+  durata        Int          // Durata in minuti
+  categoria     CategoriaServizio
+  attivo        Boolean       @default(true)
+  richieste     Richiesta[]
+  appuntamenti  Appuntamento[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+// Modello per le Richieste di Appuntamento
+model Richiesta {
+  id              String         @id @default(uuid())
+  nome            String
+  cognome         String
+  email           String
+  telefono        String
+  note            String?
+  servizioId      String
+  servizio        Servizio      @relation(fields: [servizioId], references: [id])
+  stato           StatoRichiesta @default(PENDING)
+  pdfGenerato     Boolean        @default(false)
+  urlPdf          String?
+  dataPreferita   DateTime?      // Data preferita dal cliente
+  oraPreferita    DateTime?      // Ora preferita dal cliente
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+}
+
+// Modello per gli Appuntamenti confermati
+model Appuntamento {
+  id          String             @id @default(uuid())
+  data        DateTime
+  ora         DateTime
+  durata      Int                // Durata in minuti
+  clienteId   String
+  cliente     Cliente            @relation(fields: [clienteId], references: [id])
+  servizioId  String
+  servizio    Servizio          @relation(fields: [servizioId], references: [id])
+  note        String?
+  stato       StatoAppuntamento  @default(CONFERMATO)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+}
+
+// Modello per i Clienti
+model Cliente {
+  id            String        @id @default(uuid())
+  nome          String
+  cognome       String
+  email         String        @unique
+  telefono      String
+  veicoli       Veicolo[]
+  appuntamenti  Appuntamento[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+// Modello per i Veicoli dei clienti
+model Veicolo {
+  id            String    @id @default(uuid())
+  targa         String    @unique
+  marca         String
+  modello       String
+  anno          Int?
+  clienteId     String
+  cliente       Cliente   @relation(fields: [clienteId], references: [id])
+  note          String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+// Enum per le categorie di servizi
+enum CategoriaServizio {
+  MECCANICA
+  CARROZZERIA
+  GOMME
+  ARIA_CONDIZIONATA
+  LAVAGGIO
+  SANIFICAZIONE
+  REVISIONE
+}
+
+// Enum per lo stato delle richieste
+enum StatoRichiesta {
+  PENDING
+  APPROVATA
+  RIFIUTATA
+}
+
+// Enum per lo stato degli appuntamenti
+enum StatoAppuntamento {
+  CONFERMATO
+  IN_CORSO
+  COMPLETATO
+  CANCELLATO
+}
