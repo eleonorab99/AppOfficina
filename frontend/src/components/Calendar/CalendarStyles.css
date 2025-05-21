@@ -26,6 +26,104 @@
     font-size: 0.7rem;
     white-space: normal;
   }
+
+  /* Miglioramenti per i giorni della settimana su mobile */
+  .fc-col-header-cell {
+    padding: 4px !important;
+  }
+
+  .fc-col-header-cell-cushion {
+    font-size: 0.8rem !important;
+    padding: 2px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 40px !important;
+    display: block !important;
+  }
+
+  /* Abbreviazioni personalizzate per i giorni della settimana */
+  .fc-day-sun .fc-col-header-cell-cushion { content: "Dom" !important; }
+  .fc-day-mon .fc-col-header-cell-cushion { content: "Lun" !important; }
+  .fc-day-tue .fc-col-header-cell-cushion { content: "Mar" !important; }
+  .fc-day-wed .fc-col-header-cell-cushion { content: "Mer" !important; }
+  .fc-day-thu .fc-col-header-cell-cushion { content: "Gio" !important; }
+  .fc-day-fri .fc-col-header-cell-cushion { content: "Ven" !important; }
+  .fc-day-sat .fc-col-header-cell-cushion { content: "Sab" !important; }
+
+  /* Migliora la visualizzazione della griglia su mobile */
+  .fc-scrollgrid-sync-table {
+    min-width: 100% !important;
+  }
+
+  .fc-daygrid-day {
+    min-height: 2rem !important;
+  }
+
+  /* Migliora la visualizzazione degli orari nella vista giornaliera */
+  .fc-timegrid-axis-cushion {
+    font-size: 0.75rem !important;
+    padding: 4px !important;
+  }
+
+  .fc-timegrid-slot-label {
+    font-size: 0.75rem !important;
+    font-weight: 500 !important;
+  }
+
+  .fc-timegrid-axis {
+    padding: 0 !important;
+    width: 45px !important;
+  }
+
+  /* Migliora la visualizzazione della griglia temporale */
+  .fc-timegrid-slots {
+    font-size: 0.75rem !important;
+  }
+
+  .fc-timegrid-slot {
+    height: 3rem !important;  /* Aumentato per una migliore leggibilità */
+  }
+
+  /* Migliora la visualizzazione dell'intestazione della griglia temporale */
+  .fc-timegrid-col-header {
+    padding: 2px !important;
+  }
+
+  /* Assicura che gli orari siano sempre visibili */
+  .fc-timegrid-slot-label-cushion {
+    display: block !important;
+    padding: 0 2px !important;
+    white-space: nowrap !important;
+  }
+
+  /* Migliora la visualizzazione degli eventi nella griglia temporale */
+  .fc-timegrid-event {
+    min-height: 1.5rem !important;
+    font-size: 0.75rem !important;
+  }
+
+  /* Ottimizza lo spazio per la visualizzazione degli orari */
+  .fc-timegrid-axis-frame {
+    min-height: 24px !important;
+  }
+
+  /* Assicura che il contenitore della griglia temporale sia correttamente dimensionato */
+  .fc-timegrid-body {
+    min-height: 0 !important;
+  }
+
+  /* Migliora la leggibilità degli orari nella vista settimanale */
+  .fc-timegrid-axis-cushion.fc-scrollgrid-shrink-cushion {
+    font-size: 0.75rem !important;
+    white-space: nowrap !important;
+    min-width: 45px !important;
+  }
+}
+
+/* Assicura una transizione fluida tra le viste */
+.fc-view-harness {
+  transition: height 0.3s ease-in-out;
 }
 
 /* Migliora la visualizzazione degli eventi nel calendario */
@@ -49,14 +147,114 @@
 /* Adatta il calendario al container */
 .calendar-container {
   width: 100%;
-  overflow-x: auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.calendar-container .fc {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.calendar-container .fc-view-harness {
+  flex: 1;
+  min-height: 0;
+}
+
+.calendar-container .fc-toolbar {
+  margin-bottom: 1rem !important;
+}
+
+.calendar-container .fc-scrollgrid {
+  border: none !important;
+}
+
+.calendar-container .fc-scrollgrid-section-header {
+  background-color: #f9fafb;
 }
 
 /* Stile per i bottoni del calendario */
+.fc .fc-button-primary {
+  background-color: #f97316 !important; /* text-orange-500 */
+  border-color: #f97316 !important;
+  color: white !important;
+}
+
+.fc .fc-button-primary:hover {
+  background-color: #ea580c !important; /* text-orange-600 */
+  border-color: #ea580c !important;
+}
+
+.fc .fc-button-primary:disabled {
+  background-color: #fdba74 !important; /* text-orange-300 */
+  border-color: #fdba74 !important;
+}
+
+/* Stile per l'header del calendario */
+.fc .fc-toolbar-title {
+  color: #f97316 !important; /* text-orange-500 */
+}
+
+/* Stile per i giorni della settimana */
+.fc th {
+  background-color: #fff7ed !important; /* bg-orange-50 */
+  color: #f97316 !important; /* text-orange-500 */
+}
+
+/* Stile per il giorno corrente */
+.fc .fc-day-today {
+  background-color: #fff7ed !important; /* bg-orange-50 */
+}
+
+/* Stile per la vista lista */
+.fc-list-day-cushion {
+  background-color: #fff7ed !important; /* bg-orange-50 */
+}
+
+.fc-list-event:hover td {
+  background-color: #ffedd5 !important; /* bg-orange-100 */
+}
+
 .fc .fc-button {
   transition: all 0.2s;
 }
 
 .fc .fc-button:hover {
   opacity: 0.9;
+}
+
+
+/* Correzione dei bordi della griglia */
+.fc-scrollgrid {
+  border-left: 1px solid #ddd !important;
+}
+
+.fc-scrollgrid-section > td {
+  border-left: 1px solid #ddd !important;
+}
+
+.fc-theme-standard td, 
+.fc-theme-standard th {
+  border-left: 1px solid #ddd !important;
+}
+
+/* Assicurati che il bordo sinistro sia visibile anche nella vista settimanale e giornaliera */
+.fc-timegrid-col {
+  border-left: 1px solid #ddd !important;
+}
+
+/* Migliora la visualizzazione complessiva dei bordi */
+.fc-theme-standard .fc-scrollgrid {
+  border: 1px solid #ddd !important;
+}
+
+/* Migliora l'aspetto del modal su dispositivi mobili */
+@media (max-width: 767px) {
+  .modal-content {
+    margin: 0 8px !important;
+    max-height: 90vh !important;
+  }
 }

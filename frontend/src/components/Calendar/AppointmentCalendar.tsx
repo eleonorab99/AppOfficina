@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -8,47 +8,7 @@ import itLocale from '@fullcalendar/core/locales/it';
 import { EventClickArg } from '@fullcalendar/core';
 import axios from 'axios';
 import './CalendarStyles.css'; // Importa gli stili personalizzati
-
-interface Appointment {
-  id: string;
-  title: string;
-  start: string;
-  end: string;
-  backgroundColor: string;
-  borderColor: string;
-  extendedProps: {
-    cliente: {
-      nome: string;
-      cognome: string;
-      email: string;
-      telefono: string;
-    };
-    servizio: {
-      nome: string;
-    };
-    note?: string;
-    stato: string;
-  };
-}
-
-// Interfaccia per i dati ricevuti dall'API
-interface AppointmentData {
-  id: string;
-  cliente: {
-    nome: string;
-    cognome: string;
-    email: string;
-    telefono: string;
-  };
-  servizio: {
-    nome: string;
-  };
-  data: string;
-  ora: string;
-  durata: number;
-  note?: string;
-  stato: string;
-}
+import { Appointment, AppointmentData } from '../../types/CalendarTypes';
 
 const AppointmentCalendar: React.FC = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -56,6 +16,7 @@ const AppointmentCalendar: React.FC = () => {
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const calendarRef = useRef<FullCalendar>(null);
 
   useEffect(() => {
     fetchAppointments();
@@ -140,8 +101,23 @@ const AppointmentCalendar: React.FC = () => {
     }
   };
 
+  // Aggiungiamo una funzione per gestire il resize della finestra
+  const handleResize = useCallback(() => {
+    const calendarApi = calendarRef.current?.getApi();
+    if (calendarApi) {
+      if (window.innerWidth < 768 && calendarApi.view.type === 'dayGridMonth') {
+        calendarApi.changeView('listWeek');
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [handleResize]);
+
   return (
-    <div className="bg-white rounded-lg shadow-lg p-2 sm:p-4 md:p-6 h-full">
+    <div className="bg-white rounded-lg shadow-lg p-2 sm:p-4 md:p-6 h-full flex flex-col">
       <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-gray-800">
         Calendario Appuntamenti
       </h2>
@@ -157,8 +133,9 @@ const AppointmentCalendar: React.FC = () => {
           <p className="text-gray-600">Caricamento appuntamenti...</p>
         </div>
       ) : (
-        <div className="calendar-container">
+        <div className="calendar-container flex-1">
           <FullCalendar
+            ref={calendarRef}
             plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
             initialView={window.innerWidth < 768 ? "listWeek" : "dayGridMonth"}
             headerToolbar={{
@@ -169,7 +146,7 @@ const AppointmentCalendar: React.FC = () => {
             locale={itLocale}
             events={appointments}
             eventClick={handleEventClick}
-            height="auto"
+            height="100%"
             buttonText={{
               today: 'oggi',
               month: 'mese',
@@ -192,6 +169,14 @@ const AppointmentCalendar: React.FC = () => {
               if (window.innerWidth < 768 && viewInfo.view.type === 'dayGridMonth') {
                 const calendarApi = viewInfo.view.calendar;
                 calendarApi.changeView('listWeek');
+              }
+            }}
+            views={{
+              dayGridMonth: {
+                dayMaxEventRows: window.innerWidth < 768 ? 2 : 3,
+              },
+              timeGrid: {
+                dayMaxEventRows: window.innerWidth < 768 ? 2 : 3,
               }
             }}
           />

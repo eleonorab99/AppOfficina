@@ -4,7 +4,7 @@ import HomePage from './components/HomePage/HomePage';
 import EventsPage from './components/HomePage/EventsPage';
 import OrdersPage from './components/HomePage/OrdersPage';
 import Contattaci from './components/Contattaci/Contattaci';
-import CalendarPage from './pages/CalendarPage';
+import CalendarPage from './components/Calendar/CalendarPage';
 
 function App() {
   return (
