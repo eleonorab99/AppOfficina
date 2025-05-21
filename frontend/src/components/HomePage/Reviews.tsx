@@ -8,7 +8,11 @@ const Reviews = () => {
       </div>
 
       {/* Container scrollabile orizzontalmente */}
-      <div className="relative overflow-x-auto flex gap-6 p-10 snap-x snap-mandatory no-scrollbar">
+      <div
+        className="relative overflow-x-auto flex gap-6 p-10 snap-x snap-mandatory 
+          scrollbar-none md:scrollbar-thin md:scrollbar-thumb-orange-400 
+          md:scrollbar-track-orange-100 touch-pan-x"
+      >
         <div className="flex-none snap-center">
           <Card
             title="Paola F."
