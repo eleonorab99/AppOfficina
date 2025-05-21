@@ -33,6 +33,9 @@ const Navbar: React.FC = () => {
           <Link to="/officina" className={`${isActive('/officina')} hover:text-orange-500 font-medium transition-colors`}>
             Officina
           </Link>
+          <Link to="/calendario" className={`${isActive('/calendario')} hover:text-orange-500 font-medium transition-colors`}>
+            Calendario
+          </Link>
           <Link to="/servizi" className={`${isActive('/servizi')} hover:text-orange-500 font-medium transition-colors`}>
             Servizi
           </Link>
@@ -83,6 +86,13 @@ const Navbar: React.FC = () => {
               onClick={() => setIsMenuOpen(false)}
             >
               Officina
+            </Link>
+            <Link 
+              to="/calendario" 
+              className={`${isActive('/calendario')} hover:text-orange-500 font-medium transition-colors`}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Calendario
             </Link>
             <Link 
               to="/servizi" 

@@ -248,7 +248,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\W11-24h2\\Desktop\\Autofficina Gaglione\\backend\\generated\\prisma",
+      "value": "C:\\Users\\valer\\OneDrive\\Desktop\\AppOfficina\\backend\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -262,7 +262,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\W11-24h2\\Desktop\\Autofficina Gaglione\\backend\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\valer\\OneDrive\\Desktop\\AppOfficina\\backend\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -280,7 +280,7 @@ const config = {
     "db": {
       "url": {
         "fromEnvVar": "DATABASE_URL",
-        "value": "mysql://root:password@localhost:3306/autofficina"
+        "value": "mysql://unilink:password@localhost:3306/officina"
       }
     }
   },
