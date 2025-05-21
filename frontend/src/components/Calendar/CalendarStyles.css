@@ -1,0 +1,62 @@
+/* Stili personalizzati per il calendario su dispositivi mobili */
+@media (max-width: 767px) {
+  .fc .fc-toolbar-title {
+    font-size: 1.2rem !important;
+  }
+  
+  .fc .fc-button {
+    padding: 0.2rem 0.4rem !important;
+    font-size: 0.8rem !important;
+  }
+  
+  .fc .fc-list-event-title {
+    font-size: 0.9rem;
+  }
+  
+  .fc .fc-list-day-cushion {
+    padding: 6px 8px !important;
+  }
+  
+  .fc .fc-daygrid-day-number {
+    font-size: 0.8rem;
+    padding: 2px 4px !important;
+  }
+  
+  .fc .fc-event-title {
+    font-size: 0.7rem;
+    white-space: normal;
+  }
+}
+
+/* Migliora la visualizzazione degli eventi nel calendario */
+.fc-event {
+  cursor: pointer;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 1px 0;
+}
+
+/* Migliora la visualizzazione della vista lista */
+.fc-list-event-dot {
+  margin-right: 8px;
+}
+
+.fc-list-event-title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Adatta il calendario al container */
+.calendar-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Stile per i bottoni del calendario */
+.fc .fc-button {
+  transition: all 0.2s;
+}
+
+.fc .fc-button:hover {
+  opacity: 0.9;
+}

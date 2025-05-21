@@ -4,6 +4,7 @@ import HomePage from './components/HomePage/HomePage';
 import EventsPage from './components/HomePage/EventsPage';
 import OrdersPage from './components/HomePage/OrdersPage';
 import Contattaci from './components/Contattaci/Contattaci';
+import CalendarPage from './pages/CalendarPage';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/events" element={<EventsPage />} />
           <Route path="/orders" element={<OrdersPage />} />
           <Route path="/contattaci" element={<Contattaci />} />
+          <Route path="/calendario" element={<CalendarPage />} />
           {/* Aggiungi altre route qui */}
         </Routes>
         
