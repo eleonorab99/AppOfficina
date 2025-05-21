@@ -1,15 +1,17 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import HomePage from './components/HomePage/HomePage';
-import EventsPage from './components/HomePage/EventsPage';
-import OrdersPage from './components/HomePage/OrdersPage';
-import Contattaci from './components/Contattaci/Contattaci';
-import CalendarPage from './components/Calendar/CalendarPage';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import HomePage from "./components/HomePage/HomePage";
+import EventsPage from "./components/HomePage/EventsPage";
+import OrdersPage from "./components/HomePage/OrdersPage";
+import Contattaci from "./components/Contattaci/Contattaci";
+import CalendarPage from "./components/Calendar/CalendarPage";
 
 function App() {
   return (
     <Router>
-      <div className="min-h-screen">
+      <div className="min-h-screen pt-[100px]">
+        {" "}
+        {/* Aggiunto pt-[100px] */}
         <Navbar />
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -19,10 +21,9 @@ function App() {
           <Route path="/calendario" element={<CalendarPage />} />
           {/* Aggiungi altre route qui */}
         </Routes>
-        
       </div>
     </Router>
   );
 }
 
-export default App
+export default App;
