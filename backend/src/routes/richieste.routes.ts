@@ -28,7 +28,7 @@ router.get('/',
 router.get("/:id", async (req: Request<RequestParams>, res: Response): Promise<void> => {
   try {
     const richiesta = await prisma.richiesta.findUnique({
-      where: { id: parseInt(req.params.id) },
+      where: { id: req.params.id },
     });
     if (!richiesta) {
       res.status(404).json({ error: "Richiesta non trovata" });
@@ -41,10 +41,16 @@ router.get("/:id", async (req: Request<RequestParams>, res: Response): Promise<v
 });
 
 // POST nuova richiesta
+import { StatoRichiesta } from "@prisma/client";
+
 router.post("/", async (req: Request<{}, {}, Richiesta>, res: Response): Promise<void> => {
   try {
+    const { stato, ...rest } = req.body;
     const richiesta = await prisma.richiesta.create({
-      data: req.body,
+      data: {
+        ...rest,
+        stato: stato as StatoRichiesta, // Cast or map string to enum
+      },
       include: { servizio: true },
     });
     res.status(201).json(richiesta);
@@ -56,9 +62,10 @@ router.post("/", async (req: Request<{}, {}, Richiesta>, res: Response): Promise
 // PUT aggiorna stato richiesta
 router.put("/:id/stato", async (req: Request<RequestParams, {}, { stato: string }>, res: Response): Promise<void> => {
   try {
+    const { StatoRichiesta } = await import("@prisma/client");
     const richiesta = await prisma.richiesta.update({
       where: { id: req.params.id },
-      data: { stato: req.body.stato },
+      data: { stato: req.body.stato as StatoRichiesta },
       include: { servizio: true },
     });
     res.json(richiesta);

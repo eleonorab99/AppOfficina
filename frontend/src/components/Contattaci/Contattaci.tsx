@@ -1,4 +1,5 @@
 import { useState } from "react";
+import api from "../../utils/Axios";
 
 const Contattaci = () => {
   const [formData, setFormData] = useState({
@@ -53,13 +54,25 @@ const Contattaci = () => {
     return newErrors.length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    if (validateForm()) {
-      console.log("Form inviato:", formData);
+  if (validateForm()) {
+    try {
+      await api.post('/servizi', {
+        nome: formData.nome,
+        descrizione: formData.messaggio,
+        prezzo: 50,
+        durata: 30,
+        categoria: "MECCANICA", // esempio, scegli tu come prenderlo dal form
+        attivo: true
+      });
+      alert("Servizio inviato!");
+    } catch {
+      alert("Errore nell'invio del servizio");
     }
-  };
+  }
+};
 
   return (
     <form onSubmit={handleSubmit} className="min-h-screen p-4 md:pt-5">

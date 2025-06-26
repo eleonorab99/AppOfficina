@@ -1,12 +1,22 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Navbar: React.FC = () => {
+  const isAdmin = localStorage.getItem("isAdmin");
   const location = useLocation();
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [adminDropdown, setAdminDropdown] = useState(false);
 
   const isActive = (path: string) => {
     return location.pathname === path ? "text-orange-500" : "text-gray-800";
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("isAdmin");
+    setAdminDropdown(false);
+    navigate("/login");
   };
 
   return (
@@ -69,10 +79,36 @@ const Navbar: React.FC = () => {
           </Link>
         </div>
 
+        {/* Admin Link con dropdown */}
+        {isAdmin && (
+          <div className="relative hidden md:inline-block">
+            <button
+              onClick={() => setAdminDropdown((prev) => !prev)}
+              className="bg-orange-500 hover:bg-orange-600 text-white rounded-xl px-4 py-2 transition-colors"
+            >
+              Admin
+            </button>
+            {adminDropdown && (
+              <div className="absolute right-0 mt-2 w-32 bg-white border rounded shadow-lg z-50">
+                <button
+                  onClick={handleLogout}
+                  className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-orange-100"
+                >
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Call Button - Always visible */}
-        <button className="bg-amber-600 hover:bg-amber-700 text-white rounded-xl px-4 py-2 transition-colors">
+        <a
+          href="tel:064744274"
+          className="bg-amber-600 hover:bg-amber-700 text-white rounded-xl px-4 py-2 transition-colors"
+          style={{ textDecoration: "none" }}
+        >
           Chiama Ora
-        </button>
+        </a>
 
         {/* Hamburger Menu Button */}
         <button

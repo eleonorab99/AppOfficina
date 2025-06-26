@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import FullCalendar from '@fullcalendar/react';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import listPlugin from '@fullcalendar/list';
-import interactionPlugin from '@fullcalendar/interaction';
-import itLocale from '@fullcalendar/core/locales/it';
-import { EventClickArg } from '@fullcalendar/core';
-import axios from 'axios';
-import './CalendarStyles.css'; // Importa gli stili personalizzati
-import { Appointment, AppointmentData } from '../../types/CalendarTypes';
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import listPlugin from "@fullcalendar/list";
+import interactionPlugin from "@fullcalendar/interaction";
+import itLocale from "@fullcalendar/core/locales/it";
+import { EventClickArg } from "@fullcalendar/core";
+import api from "../../utils/Axios";
+import "./CalendarStyles.css"; // Importa gli stili personalizzati
+import { Appointment, AppointmentData } from "../../types/CalendarTypes";
 
 const AppointmentCalendar: React.FC = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -18,40 +18,48 @@ const AppointmentCalendar: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const calendarRef = useRef<FullCalendar>(null);
 
-  useEffect(() => {
-    fetchAppointments();
-  }, []);
-
-  const fetchAppointments = async () => {
+  // Usa useCallback per evitare il warning
+  const fetchAppointments = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await axios.get<AppointmentData[]>(`${process.env.REACT_APP_API_URL}/api/appuntamenti`);
-      
-      // Trasforma i dati per FullCalendar
-      const formattedAppointments = response.data.map((appointment: AppointmentData) => ({
-        id: appointment.id,
-        title: `${appointment.cliente.nome} ${appointment.cliente.cognome} - ${appointment.servizio.nome}`,
-        start: new Date(appointment.data).toISOString().split('T')[0] + 'T' + new Date(appointment.ora).toISOString().split('T')[1],
-        end: calculateEndTime(new Date(appointment.data).toISOString().split('T')[0] + 'T' + new Date(appointment.ora).toISOString().split('T')[1], appointment.durata),
-        backgroundColor: getStatusColor(appointment.stato),
-        borderColor: getStatusColor(appointment.stato),
-        extendedProps: {
-          cliente: appointment.cliente,
-          servizio: appointment.servizio,
-          note: appointment.note,
-          stato: appointment.stato
-        }
-      }));
-      
+      const response = await api.get<AppointmentData[]>("/appuntamenti");
+      const formattedAppointments = response.data.map(
+        (appointment: AppointmentData) => ({
+          id: appointment.id,
+          title: `${appointment.cliente.nome} ${appointment.cliente.cognome} - ${appointment.servizio.nome}`,
+          start:
+            new Date(appointment.data).toISOString().split("T")[0] +
+            "T" +
+            new Date(appointment.ora).toISOString().split("T")[1],
+          end: calculateEndTime(
+            new Date(appointment.data).toISOString().split("T")[0] +
+              "T" +
+              new Date(appointment.ora).toISOString().split("T")[1],
+            appointment.durata
+          ),
+          backgroundColor: getStatusColor(appointment.stato),
+          borderColor: getStatusColor(appointment.stato),
+          extendedProps: {
+            cliente: appointment.cliente,
+            servizio: appointment.servizio,
+            note: appointment.note,
+            stato: appointment.stato,
+          },
+        })
+      );
       setAppointments(formattedAppointments);
       setError(null);
     } catch (err) {
-      console.error('Errore nel recupero degli appuntamenti:', err);
-      setError('Impossibile caricare gli appuntamenti. Riprova più tardi.');
+      console.error("Errore nel recupero degli appuntamenti:", err);
+      setError("Impossibile caricare gli appuntamenti. Riprova più tardi.");
     } finally {
       setLoading(false);
     }
-  };
+  }, []); // <-- dipendenze vuote, se non usi variabili esterne
+
+  useEffect(() => {
+    fetchAppointments();
+  }, [fetchAppointments]);
 
   const calculateEndTime = (startTime: string, durationMinutes: number) => {
     const date = new Date(startTime);
@@ -61,16 +69,16 @@ const AppointmentCalendar: React.FC = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'CONFERMATO':
-        return '#4285F4'; // Blu
-      case 'IN_CORSO':
-        return '#FBBC05'; // Giallo
-      case 'COMPLETATO':
-        return '#34A853'; // Verde
-      case 'CANCELLATO':
-        return '#EA4335'; // Rosso
+      case "CONFERMATO":
+        return "#4285F4"; // Blu
+      case "IN_CORSO":
+        return "#FBBC05"; // Giallo
+      case "COMPLETATO":
+        return "#34A853"; // Verde
+      case "CANCELLATO":
+        return "#EA4335"; // Rosso
       default:
-        return '#9E9E9E'; // Grigio
+        return "#9E9E9E"; // Grigio
     }
   };
 
@@ -86,18 +94,21 @@ const AppointmentCalendar: React.FC = () => {
 
   const handleUpdateStatus = async (newStatus: string) => {
     if (!selectedEvent) return;
-    
+
     try {
-      await axios.put(`${process.env.REACT_APP_API_URL}/api/appuntamenti/${selectedEvent.id}/stato`, {
-        stato: newStatus
-      });
-      
+      await api.put(
+        `${process.env.REACT_APP_API_URL}/api/appuntamenti/${selectedEvent.id}/stato`,
+        {
+          stato: newStatus,
+        }
+      );
+
       // Aggiorna la lista degli appuntamenti
       fetchAppointments();
       handleCloseModal();
     } catch (err) {
-      console.error('Errore nell\'aggiornamento dello stato:', err);
-      setError('Impossibile aggiornare lo stato dell\'appuntamento.');
+      console.error("Errore nell'aggiornamento dello stato:", err);
+      setError("Impossibile aggiornare lo stato dell'appuntamento.");
     }
   };
 
@@ -105,15 +116,15 @@ const AppointmentCalendar: React.FC = () => {
   const handleResize = useCallback(() => {
     const calendarApi = calendarRef.current?.getApi();
     if (calendarApi) {
-      if (window.innerWidth < 768 && calendarApi.view.type === 'dayGridMonth') {
-        calendarApi.changeView('listWeek');
+      if (window.innerWidth < 768 && calendarApi.view.type === "dayGridMonth") {
+        calendarApi.changeView("listWeek");
       }
     }
   }, []);
 
   useEffect(() => {
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, [handleResize]);
 
   return (
@@ -121,13 +132,9 @@ const AppointmentCalendar: React.FC = () => {
       <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-gray-800">
         Calendario Appuntamenti
       </h2>
-      
-      {error && (
-        <p className="text-red-600 mb-4">
-          {error}
-        </p>
-      )}
-      
+
+      {error && <p className="text-red-600 mb-4">{error}</p>}
+
       {loading ? (
         <div className="flex justify-center p-6">
           <p className="text-gray-600">Caricamento appuntamenti...</p>
@@ -136,25 +143,33 @@ const AppointmentCalendar: React.FC = () => {
         <div className="calendar-container flex-1">
           <FullCalendar
             ref={calendarRef}
-            plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
+            plugins={[
+              dayGridPlugin,
+              timeGridPlugin,
+              listPlugin,
+              interactionPlugin,
+            ]}
             initialView={window.innerWidth < 768 ? "listWeek" : "dayGridMonth"}
             headerToolbar={{
-              left: window.innerWidth < 768 ? 'prev,next' : 'prev,next today',
-              center: 'title',
-              right: window.innerWidth < 768 ? 'dayGridMonth,listWeek,timeGridDay' : 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+              left: window.innerWidth < 768 ? "prev,next" : "prev,next today",
+              center: "title",
+              right:
+                window.innerWidth < 768
+                  ? "dayGridMonth,listWeek,timeGridDay"
+                  : "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
             }}
             locale={itLocale}
             events={appointments}
             eventClick={handleEventClick}
             height="100%"
             buttonText={{
-              today: 'oggi',
-              month: 'mese',
-              week: 'settimana',
-              day: 'giorno',
-              list: 'lista'
+              today: "oggi",
+              month: "mese",
+              week: "settimana",
+              day: "giorno",
+              list: "lista",
             }}
-            loading={isLoading => {
+            loading={(isLoading) => {
               setLoading(isLoading);
             }}
             stickyHeaderDates={true}
@@ -166,9 +181,12 @@ const AppointmentCalendar: React.FC = () => {
             editable={false}
             viewDidMount={(viewInfo) => {
               // Aggiorna la vista in base alla dimensione dello schermo
-              if (window.innerWidth < 768 && viewInfo.view.type === 'dayGridMonth') {
+              if (
+                window.innerWidth < 768 &&
+                viewInfo.view.type === "dayGridMonth"
+              ) {
                 const calendarApi = viewInfo.view.calendar;
-                calendarApi.changeView('listWeek');
+                calendarApi.changeView("listWeek");
               }
             }}
             views={{
@@ -177,12 +195,12 @@ const AppointmentCalendar: React.FC = () => {
               },
               timeGrid: {
                 dayMaxEventRows: window.innerWidth < 768 ? 2 : 3,
-              }
+              },
             }}
           />
         </div>
       )}
-      
+
       {/* Modal per i dettagli dell'appuntamento */}
       {openModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -193,75 +211,87 @@ const AppointmentCalendar: React.FC = () => {
                   <h3 className="text-xl font-bold mb-4 text-gray-800">
                     Dettagli Appuntamento
                   </h3>
-                  
+
                   <div className="space-y-3 mb-6">
                     <div>
                       <p className="text-gray-800">
-                        <span className="font-semibold">Cliente:</span> {selectedEvent.extendedProps.cliente.nome} {selectedEvent.extendedProps.cliente.cognome}
+                        <span className="font-semibold">Cliente:</span>{" "}
+                        {selectedEvent.extendedProps.cliente.nome}{" "}
+                        {selectedEvent.extendedProps.cliente.cognome}
                       </p>
                     </div>
                     <div>
                       <p className="text-gray-800">
-                        <span className="font-semibold">Servizio:</span> {selectedEvent.extendedProps.servizio.nome}
+                        <span className="font-semibold">Servizio:</span>{" "}
+                        {selectedEvent.extendedProps.servizio.nome}
                       </p>
                     </div>
                     <div>
                       <p className="text-gray-800">
-                        <span className="font-semibold">Data:</span> {new Date(selectedEvent.start).toLocaleDateString('it-IT')}
+                        <span className="font-semibold">Data:</span>{" "}
+                        {new Date(selectedEvent.start).toLocaleDateString(
+                          "it-IT"
+                        )}
                       </p>
                     </div>
                     <div>
                       <p className="text-gray-800">
-                        <span className="font-semibold">Ora:</span> {new Date(selectedEvent.start).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })}
+                        <span className="font-semibold">Ora:</span>{" "}
+                        {new Date(selectedEvent.start).toLocaleTimeString(
+                          "it-IT",
+                          { hour: "2-digit", minute: "2-digit" }
+                        )}
                       </p>
                     </div>
                     <div>
                       <p className="text-gray-800">
-                        <span className="font-semibold">Stato:</span> {selectedEvent.extendedProps.stato}
+                        <span className="font-semibold">Stato:</span>{" "}
+                        {selectedEvent.extendedProps.stato}
                       </p>
                     </div>
                     {selectedEvent.extendedProps.note && (
                       <div>
                         <p className="text-gray-800">
-                          <span className="font-semibold">Note:</span> {selectedEvent.extendedProps.note}
+                          <span className="font-semibold">Note:</span>{" "}
+                          {selectedEvent.extendedProps.note}
                         </p>
                       </div>
                     )}
                   </div>
-                  
+
                   <h3 className="text-xl font-bold mb-4 text-gray-800">
                     Aggiorna Stato
                   </h3>
-                  
+
                   <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
-                    <button 
+                    <button
                       className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded text-sm"
-                      onClick={() => handleUpdateStatus('CONFERMATO')}
+                      onClick={() => handleUpdateStatus("CONFERMATO")}
                     >
                       Conferma
                     </button>
-                    <button 
+                    <button
                       className="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded text-sm"
-                      onClick={() => handleUpdateStatus('IN_CORSO')}
+                      onClick={() => handleUpdateStatus("IN_CORSO")}
                     >
                       In Corso
                     </button>
-                    <button 
+                    <button
                       className="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded text-sm"
-                      onClick={() => handleUpdateStatus('COMPLETATO')}
+                      onClick={() => handleUpdateStatus("COMPLETATO")}
                     >
                       Completato
                     </button>
-                    <button 
+                    <button
                       className="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded text-sm"
-                      onClick={() => handleUpdateStatus('CANCELLATO')}
+                      onClick={() => handleUpdateStatus("CANCELLATO")}
                     >
                       Cancella
                     </button>
                   </div>
-                  
+
                   <div className="mt-6 text-right">
-                    <button 
+                    <button
                       className="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded"
                       onClick={handleCloseModal}
                     >

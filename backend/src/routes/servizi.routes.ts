@@ -42,12 +42,26 @@ router.get('/:id', async (req: Request<RequestParams>, res: Response): Promise<v
 // POST nuovo servizio
 router.post('/', async (req: Request<{}, {}, Servizio>, res: Response): Promise<void> => {
   try {
+    const { nome, descrizione, prezzo, durata, categoria, attivo } = req.body;
+
+    if (!nome || !categoria) {
+      res.status(400).json({ error: "Nome e categoria sono obbligatori" });
+    }
+
     const servizio = await prisma.servizio.create({
-      data: req.body
+      data: {
+        nome,
+        descrizione,
+        prezzo,
+        durata,
+        categoria, // Deve essere uno dei valori dell'enum CategoriaServizio
+        attivo: attivo !== undefined ? attivo : true,
+      },
     });
+
     res.status(201).json(servizio);
   } catch (error) {
-    res.status(500).json({ error: 'Errore nella creazione del servizio' });
+    res.status(500).json({ error: "Errore nella creazione del servizio" });
   }
 });
 
