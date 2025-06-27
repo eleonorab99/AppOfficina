@@ -1,80 +1,69 @@
 import * as React from "react";
-import { styled } from "@mui/material/styles";
-import Card from "@mui/material/Card";
-import CardMedia from "@mui/material/CardMedia";
-import CardContent from "@mui/material/CardContent";
-import Collapse from "@mui/material/Collapse";
-import IconButton, { IconButtonProps } from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 
 interface OfficinaCardProps {
-  title?: string;
+  title: string;
   subheader?: string;
   image: string;
   alt?: string;
   description: string;
   expandedContent?: React.ReactNode;
+  reverse?: boolean;
 }
-
-interface ExpandMoreProps extends IconButtonProps {
-  expand: boolean;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const ExpandMore = styled((props: ExpandMoreProps) => {
-  const { expand, ...other } = props;
-  return <IconButton {...other} />;
-})(({ theme, expand }) => ({
-  marginLeft: "auto",
-  transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
-  transition: theme.transitions.create("transform", {
-    duration: theme.transitions.duration.shortest,
-  }),
-}));
-
-const StyledCard = styled(Card)({
-  width: 320,
-  display: "flex",
-  flexDirection: "column",
-  transition: "box-shadow 0.3s",
-  boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-  "&:hover": {
-    boxShadow: "0 0 0 6px rgba(255,140,0,0.3)", // sfumatura arancione
-  },
-});
-
-const StyledCardMedia = styled(CardMedia)({
-  height: 200,
-  objectFit: "cover",
-}) as typeof CardMedia;
 
 const OfficinaCard: React.FC<OfficinaCardProps> = ({
   title,
+  subheader,
   image,
   alt,
   description,
   expandedContent,
+  reverse = false,
 }) => {
-  const [expanded, setExpanded] = React.useState(false);
-
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
-
   return (
-    <StyledCard>
-      <StyledCardMedia component="img" src={image} alt={alt || title} />
-      <CardContent sx={{ py: 2 }}>
-        <Typography variant="body2" sx={{ color: "text.secondary" }}>
-          {description}
-        </Typography>
-      </CardContent>
-      {expandedContent && (
-        <Collapse in={expanded} timeout="auto" unmountOnExit>
-          <CardContent>{expandedContent}</CardContent>
-        </Collapse>
-      )}
-    </StyledCard>
+    <div
+      className={`flex flex-col-reverse md:flex-row ${
+        reverse ? "md:flex-row-reverse" : ""
+      } items-center gap-12 bg-white/90 rounded-2xl shadow-2xl border border-orange-100 transition-transform hover:scale-[1.03]`}
+      style={{ minHeight: 420 }}
+    >
+      {/* Text */}
+      <div className="md:w-1/2 w-full p-10 flex flex-col gap-4">
+        <h3 className="text-3xl font-extrabold mb-2 text-orange-600">{title}</h3>
+        {subheader && (
+          <div className="text-orange-400 mb-3 font-semibold italic text-lg">
+            {subheader}
+          </div>
+        )}
+        <p className="mb-3 text-gray-700 text-lg">{description}</p>
+        {expandedContent && (
+          <div className="bg-orange-50/80 border border-orange-200 rounded-xl p-4 mt-2 text-gray-700 text-base">
+            {expandedContent}
+          </div>
+        )}
+      </div>
+      {/* Image */}
+      <div className="md:w-1/2 w-full flex justify-center items-center p-6">
+        {image.endsWith(".mp4") ? (
+          <video
+            src={image}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="rounded-2xl shadow-2xl w-full max-w-xl object-cover border-4 border-orange-100"
+            style={{ minHeight: 320, maxHeight: 400 }}
+            poster="/img5.jpg" // opzionale: anteprima
+          />
+        ) : (
+          <img
+            src={image}
+            alt={alt || title}
+            className="rounded-2xl shadow-2xl w-full max-w-xl object-cover border-4 border-orange-100 transition-transform duration-300 hover:scale-105"
+            style={{ minHeight: 320, maxHeight: 400 }}
+          />
+        )}
+      </div>
+    </div>
   );
 };
 
