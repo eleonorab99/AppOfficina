@@ -1,12 +1,12 @@
 import React from "react";
 import BarraInferiore from "../HomePage/BarraInferiore";
 
-const Carrozzeria: React.FC = () => {
+const MappaturaCentraline: React.FC = () => {
     return (
         <div>
             <div className="min-h-screen bg-gray-50 py-6 px-2">
                 <h1 className="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-8 md:mb-10 tracking-wide">
-                    CARROZZERIA
+                    MAPPATURA CENTRALINE
                 </h1>
                 {/* Grid responsive per box prenota e immagini */}
                 <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 px-2 md:px-4 mb-8 md:mb-12">
@@ -59,7 +59,7 @@ const Carrozzeria: React.FC = () => {
                     {/* Immagine 1 */}
                     <div>
                         <img
-                            src="/carrozzeria1.jpg"
+                            src="/mappatura.jpg"
                             alt="Riparazione auto"
                             className="rounded-lg object-cover w-full h-48 md:h-56"
                         />
@@ -67,7 +67,7 @@ const Carrozzeria: React.FC = () => {
                     {/* Immagine 2 */}
                     <div>
                         <img
-                            src="/carrozzeria.jpg"
+                            src="/mappatura1.jpg"
                             alt="Officina"
                             className="rounded-lg object-cover w-full h-48 md:h-56"
                         />
@@ -76,7 +76,7 @@ const Carrozzeria: React.FC = () => {
                 {/* Testo sotto TUTTE le immagini */}
                 <div className="max-w-3xl mx-auto px-2 md:px-4 mt-8">
                     <h2 className="text-xl md:text-2xl font-semibold text-gray-800 mb-4 tracking-wide">
-                        CARROZZERIA
+                        MAPPATURA CENTRALINE
                     </h2>
                     <div className="w-12 md:w-16 h-1 bg-blue-700 mb-6" />
                     <p className="mb-4 text-gray-700 text-sm md:text-base">
@@ -86,15 +86,15 @@ const Carrozzeria: React.FC = () => {
                     <ul className="list-none space-y-2 text-gray-700 text-sm md:text-base">
                         <li className="flex items-start">
                             <span className="text-blue-700 mr-2 mt-1">✔</span>
-                            Riparazione danni da incidente e ammaccature.
+                            Ricarica gas refrigerante.
                         </li>
                         <li className="flex items-start">
                             <span className="text-blue-700 mr-2 mt-1">✔</span>
-                            Verniciatura e ritocchi di carrozzeria.
+                            Controllo, riparazione e pulizia impianto di climatizzazione.
                         </li>
                         <li className="flex items-start">
                             <span className="text-blue-700 mr-2 mt-1">✔</span>
-                            Sostituzione parti di carrozzeria danneggiate.
+                            Sostituzione filtri abitacolo e componenti A/C.
                         </li>
                     </ul>
                 </div>
@@ -104,4 +104,4 @@ const Carrozzeria: React.FC = () => {
     );
 };
 
-export default Carrozzeria;
+export default MappaturaCentraline;

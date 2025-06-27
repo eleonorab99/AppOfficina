@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import BarraInferiore from "../HomePage/BarraInferiore";
 
 const servizi = [
   {
@@ -30,7 +31,7 @@ const servizi = [
   {
     nome: "MAPPATURA CENTRALINE",
     img: "/mappatura.jpg",
-    link: "/servizi/ricarica-condizionatori",
+    link: "/servizi/mappatura-centraline",
   },
 ];
 
@@ -38,6 +39,7 @@ const Servizi: React.FC = () => {
   const navigate = useNavigate();
 
   return (
+    <div>
     <div className="min-h-screen bg-gray-50 py-10">
       <h1 className="text-3xl font-bold text-center text-orange-500 mb-10">
         SERVIZI
@@ -63,6 +65,8 @@ const Servizi: React.FC = () => {
           </div>
         ))}
       </div>
+    </div>
+    <BarraInferiore />
     </div>
   );
 };

@@ -1,24 +1,42 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
-import { PDFService } from "../templates/email/pdf";
+import { PDFService } from "../templates/uploads/pdf";
 import { transporter, emailConfig } from "../config/email";
+import fs from "fs";
+import path from "path";
 
 const prisma = new PrismaClient();
 const pdfService = new PDFService();
 
 export const createRichiesta = async (req: Request, res: Response) => {
   try {
+    console.log("Ricevuta richiesta:", req.body);
+
     const { nome, cognome, email, telefono, note, servizioId } = req.body;
 
-    // Recupera il nome del servizio
-    const servizio = await prisma.servizio.findUnique({
-      where: { id: servizioId },
-    });
+    // Recupera il nome del servizio SOLO se servizioId è presente
+    let servizioNome = "Altro";
+    if (servizioId) {
+      const servizio = await prisma.servizio.findUnique({
+        where: { id: servizioId },
+      });
+      if (servizio?.nome) servizioNome = servizio.nome;
+    }
+
+    // Prepara i dati per il salvataggio
+    const data: any = { nome, cognome, email, telefono, note };
+    if (servizioId) data.servizioId = servizioId;
 
     // Salva la richiesta nel DB
     const richiesta = await prisma.richiesta.create({
-      data: { nome, cognome, email, telefono, note, servizioId },
+      data,
     });
+
+    // Assicurati che la cartella per i PDF esista
+    const pdfDir = path.join(__dirname, "../templates/uploads/pdf");
+    if (!fs.existsSync(pdfDir)) {
+      fs.mkdirSync(pdfDir, { recursive: true });
+    }
 
     // Genera PDF
     const pdfPath = await pdfService.generateRequestPDF({
@@ -26,7 +44,7 @@ export const createRichiesta = async (req: Request, res: Response) => {
       cognome,
       email,
       telefono,
-      servizio: servizio?.nome || "Altro",
+      servizio: servizioNome,
       note,
     });
 
@@ -53,5 +71,6 @@ export const createRichiesta = async (req: Request, res: Response) => {
     res.status(201).json({ message: "Richiesta inviata con successo" });
   } catch (error) {
     res.status(500).json({ error: "Errore nella creazione della richiesta" });
+    console.error("Errore dettagliato:", error);
   }
 };

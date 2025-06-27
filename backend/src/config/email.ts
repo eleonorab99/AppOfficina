@@ -9,7 +9,7 @@ export const emailConfig = {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASSWORD
   },
-  from: process.env.EMAIL_FROM || 'noreply@autofficina.com'
+  from: process.env.EMAIL_FROM || 'eleonoratornesi@gmail.com'
 };
 
 export const transporter = nodemailer.createTransport(emailConfig);

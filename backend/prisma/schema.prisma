@@ -36,8 +36,8 @@ model Richiesta {
   email           String
   telefono        String
   note            String?
-  servizioId      String
-  servizio        Servizio      @relation(fields: [servizioId], references: [id])
+  servizioId      String?
+  servizio        Servizio?      @relation(fields: [servizioId], references: [id])
   stato           StatoRichiesta @default(PENDING)
   pdfGenerato     Boolean        @default(false)
   urlPdf          String?

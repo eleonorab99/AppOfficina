@@ -44,28 +44,12 @@ router.get(
     }
   }
 );
-
-// POST nuova richiesta
 import { StatoRichiesta } from "@prisma/client";
+// POST nuova richiesta
+import { createRichiesta } from "../controllers/richiesteController";
 
 router.post(
-  "/",
-  async (req: Request<{}, {}, Richiesta>, res: Response): Promise<void> => {
-    try {
-      const { stato, ...rest } = req.body;
-      const richiesta = await prisma.richiesta.create({
-        data: {
-          ...rest,
-          stato: stato as StatoRichiesta,
-        },
-        include: { servizio: true },
-      });
-      res.status(201).json(richiesta);
-    } catch (error) {
-      console.error("Errore dettagliato:", error);
-      res.status(500).json({ error: "Errore nella creazione della richiesta" });
-    }
-  }
+  "/", createRichiesta
 );
 
 // PUT aggiorna stato richiesta
@@ -84,11 +68,9 @@ router.put(
       });
       res.json(richiesta);
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          error: "Errore nell'aggiornamento dello stato della richiesta",
-        });
+      res.status(500).json({
+        error: "Errore nell'aggiornamento dello stato della richiesta",
+      });
     }
   }
 );

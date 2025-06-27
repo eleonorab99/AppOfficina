@@ -8,7 +8,7 @@ export interface Richiesta {
     email: string;
     telefono: string;
     note?: string;
-    servizioId: string;
+    servizioId?: string;
     stato?: string;
     pdfGenerato?: boolean;
     urlPdf?: string;

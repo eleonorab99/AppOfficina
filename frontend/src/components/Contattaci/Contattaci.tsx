@@ -3,6 +3,7 @@ import api from "../../utils/Axios";
 import BarraInferiore from "../HomePage/BarraInferiore";
 import Informazioni from "./Informazioni";
 import Maps from "./Maps";
+import Informativa from "./Informativa"; // <--- aggiungi questa importazione
 
 const Contattaci = () => {
   const [formData, setFormData] = useState({
@@ -20,6 +21,7 @@ const Contattaci = () => {
 
   const [errors, setErrors] = useState<string[]>([]);
   const [success, setSuccess] = useState<string | null>(null);
+  const [showInformativa, setShowInformativa] = useState(false); // <--- nuovo stato
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -58,13 +60,6 @@ const Contattaci = () => {
     return newErrors.length === 0;
   };
 
-  // Mappa settore a servizioId (aggiorna secondo i tuoi dati backend)
-  const settoreToServizioId: Record<string, number> = {
-    meccanica: 1,
-    elettrauto: 2,
-    gommista: 3,
-    altro: 4, // aggiorna questi ID secondo il tuo database
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,10 +72,9 @@ const Contattaci = () => {
           email: formData.email,
           telefono: formData.telefono,
           note: formData.messaggio,
-          servizioId: settoreToServizioId[formData.settore] || 4, // default "altro"
         };
 
-        await api.post("/api/richieste", richiesta);
+        await api.post("/richieste", richiesta);
 
         setSuccess("Richiesta inviata con successo!");
         setFormData({
@@ -105,6 +99,22 @@ const Contattaci = () => {
 
   return (
     <div>
+      {/* Modale Informativa */}
+      {showInformativa && (
+        <div className="fixed inset-0 bg-[rgba(0,0,0,0.03)] flex items-start justify-center z-50">
+            <div className="bg-white shadow-lg max-w-2xl w-full mt-12 relative max-h-[90vh] overflow-y-auto">
+            <button
+              className="absolute top-2 right-2 text-xl font-bold"
+              onClick={() => setShowInformativa(false)}
+              aria-label="Chiudi"
+            >
+              &times;
+            </button>
+            <Informativa />
+          </div>
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="min-h-screen p-4 md:pt-5">
         {errors.length > 0 && (
           <div className="mx-4 md:mx-10 mb-4 p-4 bg-red-100 rounded-md">
@@ -343,8 +353,18 @@ const Contattaci = () => {
                 }))
               }
             />
-            Ho letto l' informativa e autorizzo il trattamento dei miei dati
-            personali per le finalità ivi indicate.
+            Ho letto l'{" "}
+            <span
+              className="text-orange-500 underline cursor-pointer"
+              onClick={() => setShowInformativa(true)}
+              tabIndex={0}
+              role="button"
+              aria-label="Apri informativa"
+            >
+              informativa
+            </span>{" "}
+            e autorizzo il trattamento dei miei dati personali per le finalità
+            ivi indicate.
           </label>
         </div>
         <div className="mx-4 md:mx-10 mt-6">

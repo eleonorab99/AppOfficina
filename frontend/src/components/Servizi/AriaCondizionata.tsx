@@ -59,7 +59,7 @@ const AriaCondizionata: React.FC = () => {
                     {/* Immagine 1 */}
                     <div>
                         <img
-                            src="/elettrauto1.jpg"
+                            src="/ariacondizionata1.jpg"
                             alt="Riparazione auto"
                             className="rounded-lg object-cover w-full h-48 md:h-56"
                         />
@@ -67,7 +67,7 @@ const AriaCondizionata: React.FC = () => {
                     {/* Immagine 2 */}
                     <div>
                         <img
-                            src="/elettrauto2.png"
+                            src="/ariacondizionata2.jpg"
                             alt="Officina"
                             className="rounded-lg object-cover w-full h-48 md:h-56"
                         />
@@ -86,15 +86,15 @@ const AriaCondizionata: React.FC = () => {
                     <ul className="list-none space-y-2 text-gray-700 text-sm md:text-base">
                         <li className="flex items-start">
                             <span className="text-blue-700 mr-2 mt-1">✔</span>
-                            Riparazione danni da incidente e ammaccature.
+                            Ricarica gas refrigerante.
                         </li>
                         <li className="flex items-start">
                             <span className="text-blue-700 mr-2 mt-1">✔</span>
-                            Verniciatura e ritocchi di carrozzeria.
+                            Controllo, riparazione e pulizia impianto di climatizzazione.
                         </li>
                         <li className="flex items-start">
                             <span className="text-blue-700 mr-2 mt-1">✔</span>
-                            Sostituzione parti di carrozzeria danneggiate.
+                            Sostituzione filtri abitacolo e componenti A/C.
                         </li>
                     </ul>
                 </div>

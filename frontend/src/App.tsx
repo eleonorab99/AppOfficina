@@ -12,6 +12,7 @@ import TagliandoAuto from "./components/Servizi/Tagliando";
 import Elettrauto from "./components/Servizi/Elettrauto";
 import Carrozzeria from "./components/Servizi/Carrozzeria";
 import AriaCondizionata from "./components/Servizi/AriaCondizionata";
+import MappaturaCentraline from "./components/Servizi/MappaturaCentraline";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
           <Route path="/servizi/elettrauto" element={<Elettrauto />} />
           <Route path="/servizi/carrozzeria" element={<Carrozzeria />} />
           <Route path="/servizi/aria-condizionata" element={<AriaCondizionata />} />
+          <Route path="/servizi/mappatura-centraline" element={<MappaturaCentraline />} />
         </Routes>
       </div>
     </Router>
